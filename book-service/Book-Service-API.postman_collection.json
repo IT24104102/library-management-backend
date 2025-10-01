@@ -1,0 +1,1009 @@
+{
+	"info": {
+		"_postman_id": "book-service-collection",
+		"name": "Book Service API - Library Management System",
+		"description": "Complete API collection for testing the Book Service microservice including book catalog management, borrowing operations, and metadata auto-fill functionality.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Service Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Book Metadata (Auto-fill)",
+			"item": [
+				{
+					"name": "Fetch Book Metadata by ISBN",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/metadata/9780132350884",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"metadata",
+								"9780132350884"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch Metadata - Harry Potter Example",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/metadata/9780439708180",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"metadata",
+								"9780439708180"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch Metadata - Invalid ISBN",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/metadata/1234567890123",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"metadata",
+								"1234567890123"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Book Management",
+			"item": [
+				{
+					"name": "Create Book with Metadata Auto-fill",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isbn\": \"9780132350884\",\n  \"totalCopies\": 5,\n  \"shelfLocation\": \"CS-101\",\n  \"skipMetadataFetch\": false\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books/with-metadata",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"with-metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Book with Manual Override",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isbn\": \"9780439708180\",\n  \"title\": \"Harry Potter and the Sorcerer's Stone - Custom Title\",\n  \"author\": \"J.K. Rowling\",\n  \"totalCopies\": 3,\n  \"shelfLocation\": \"FICTION-HP\",\n  \"genre\": \"Fantasy\",\n  \"skipMetadataFetch\": true,\n  \"publisher\": \"Scholastic Inc.\",\n  \"publicationYear\": 1997,\n  \"language\": \"English\",\n  \"pages\": 320,\n  \"description\": \"A young wizard's journey begins at Hogwarts.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books/with-metadata",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"with-metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Book - Legacy Method",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isbn\": \"9781234567890\",\n  \"title\": \"Advanced Database Systems\",\n  \"author\": \"John Smith\",\n  \"publisher\": \"Tech Publications\",\n  \"publicationYear\": 2023,\n  \"genre\": \"Computer Science\",\n  \"description\": \"Comprehensive guide to modern database systems\",\n  \"totalCopies\": 10,\n  \"shelfLocation\": \"CS-DB-001\",\n  \"language\": \"English\",\n  \"pages\": 450\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books?page=0&size=10&sort=title",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "title"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book by ISBN",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/9780132350884",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"9780132350884"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Book",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Clean Architecture - Updated Edition\",\n  \"totalCopies\": 8,\n  \"shelfLocation\": \"CS-ARCH-001\",\n  \"status\": \"AVAILABLE\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books/9780132350884",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"9780132350884"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Book as Lost",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"LOST\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books/9781234567890",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"9781234567890"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Book",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/9781234567890",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"9781234567890"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Book Search & Filters",
+			"item": [
+				{
+					"name": "Search Books by Title",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/search?title=Clean&page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"search"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Clean"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Books by Author",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/search?author=Martin&page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"search"
+							],
+							"query": [
+								{
+									"key": "author",
+									"value": "Martin"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Books by Genre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/search?genre=Computer Science&page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"search"
+							],
+							"query": [
+								{
+									"key": "genre",
+									"value": "Computer Science"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Books - Multiple Criteria",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/search?title=Potter&author=Rowling&genre=Fantasy&status=AVAILABLE",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"search"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Potter"
+								},
+								{
+									"key": "author",
+									"value": "Rowling"
+								},
+								{
+									"key": "genre",
+									"value": "Fantasy"
+								},
+								{
+									"key": "status",
+									"value": "AVAILABLE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Available Books Only",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/available?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"available"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Genres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/genres",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"genres"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Low Stock Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/low-stock?threshold=5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"low-stock"
+							],
+							"query": [
+								{
+									"key": "threshold",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Borrowing Operations",
+			"item": [
+				{
+					"name": "Borrow a Book",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": 1,\n  \"isbn\": \"9780132350884\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books/borrow",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"borrow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Borrow Second Book",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": 1,\n  \"isbn\": \"9780439708180\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books/borrow",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"borrow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Return a Book",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": 1,\n  \"isbn\": \"9780132350884\",\n  \"notes\": \"Book returned in good condition\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books/return",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"return"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Return Book with Issues",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": 1,\n  \"isbn\": \"9780439708180\",\n  \"notes\": \"Minor damage to cover - still readable\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books/return",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"return"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Borrow Records & History",
+			"item": [
+				{
+					"name": "Get User Borrow History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/borrows/user/1?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"borrows",
+								"user",
+								"1"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Active Borrows",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/borrows/user/1/active",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"borrows",
+								"user",
+								"1",
+								"active"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book Borrow History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/borrows/book/9780132350884?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"borrows",
+								"book",
+								"9780132350884"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Borrow Records",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/borrows?page=0&size=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"borrows"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Library Management",
+			"item": [
+				{
+					"name": "Get Overdue Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/borrows/overdue",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"borrows",
+								"overdue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Books Due Soon (3 days)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/borrows/due-soon?days=3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"borrows",
+								"due-soon"
+							],
+							"query": [
+								{
+									"key": "days",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Books Due Soon (7 days)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/borrows/due-soon?days=7",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"borrows",
+								"due-soon"
+							],
+							"query": [
+								{
+									"key": "days",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Overdue Status",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/books/borrows/update-overdue",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"borrows",
+								"update-overdue"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Error Scenarios",
+			"item": [
+				{
+					"name": "Borrow Non-existent Book",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": 1,\n  \"isbn\": \"9999999999999\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books/borrow",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"borrow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Borrow with Invalid User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": 9999,\n  \"isbn\": \"9780132350884\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books/borrow",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"borrow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Book with Invalid ISBN",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isbn\": \"invalid-isbn\",\n  \"title\": \"Test Book\",\n  \"author\": \"Test Author\",\n  \"totalCopies\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Book with Missing Fields",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isbn\": \"9781234567890\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Return Book Not Borrowed",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": 1,\n  \"isbn\": \"9780132350884\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/books/return",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"return"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8082",
+			"type": "string"
+		}
+	]
+}
