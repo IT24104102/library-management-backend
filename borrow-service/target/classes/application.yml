@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME}
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: ${SERVER_PORT}
+
+logging:
+  level:
+    com.disanayake.borrowservice: DEBUG
+    org.springframework.web: DEBUG
+
+services:
+  user-service:
+    url: ${USER_SERVICE_URL}
+  book-service:
+    url: ${BOOK_SERVICE_URL}
+
+cors:
+  allowed-origins
