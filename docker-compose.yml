@@ -1,0 +1,217 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-library
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: library_main_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - library-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # User Service
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_APPLICATION_NAME=user-service
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/library_user_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SERVER_PORT=8080
+      - JWT_SECRET=myVerySecureJWTSecretKeyForLibraryManagementSystem2025
+      - JWT_ACCESS_TOKEN_EXPIRY_MS=86400000
+      - DEFAULT_ADMIN_EMAIL=admin@library.com
+      - DEFAULT_ADMIN_PASSWORD=admin123456
+      - DEFAULT_ADMIN_NAME=System Administrator
+      - DEFAULT_ADMIN_ID=ADMIN001
+      - DEFAULT_ADMIN_DEPT=IT Administration
+      - MAIL_HOST=smtp.gmail.com
+      - MAIL_PORT=587
+      - MAIL_FROM=diludfernando@gmail.com
+      - MAIL_USERNAME=diludfernando@gmail.com
+      - MAIL_PASSWORD=jili itgl woek qsuu
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - library-network
+    restart: unless-stopped
+
+  # Book Service
+  book-service:
+    build:
+      context: ./book-service
+      dockerfile: Dockerfile
+    container_name: book-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_APPLICATION_NAME=book-service
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/book_service_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SERVER_PORT=8082
+      - USER_SERVICE_URL=http://user-service:8080
+    depends_on:
+      mysql:
+        condition: service_healthy
+      user-service:
+        condition: service_started
+    networks:
+      - library-network
+    restart: unless-stopped
+
+  # Borrow Service
+  borrow-service:
+    build:
+      context: ./borrow-service
+      dockerfile: Dockerfile
+    container_name: borrow-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_APPLICATION_NAME=borrow-service
+      - DB_URL=jdbc:mysql://mysql:3306/borrow_service_db?createDatabaseIfNotExist=true
+      - DB_USERNAME=root
+      - DB_PASSWORD=password
+      - SERVER_PORT=8083
+      - USER_SERVICE_URL=http://user-service:8080
+      - BOOK_SERVICE_URL=http://book-service:8082
+    depends_on:
+      mysql:
+        condition: service_healthy
+      user-service:
+        condition: service_started
+      book-service:
+        condition: service_started
+    networks:
+      - library-network
+    restart: unless-stopped
+
+  # Payment Service
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: payment-service
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_APPLICATION_NAME=payment-service
+      - DATABASE_URL=jdbc:mysql://mysql:3306/library_payment_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=password
+      - SERVER_PORT=8084
+      - DDL_AUTO=update
+      - SHOW_SQL=true
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - library-network
+    restart: unless-stopped
+
+  # Late Reminders Service
+  late-reminders:
+    build:
+      context: ./late-reminders
+      dockerfile: Dockerfile
+    container_name: late-reminders
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_APPLICATION_NAME=late-reminders
+      - DATABASE_URL=jdbc:mysql://mysql:3306/late_reminders_db?createDatabaseIfNotExist=true
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=password
+      - SERVER_PORT=8085
+      - JPA_DDL_AUTO=update
+      - JPA_SHOW_SQL=false
+      - BORROW_SERVICE_URL=http://borrow-service:8083
+      - USER_SERVICE_URL=http://user-service:8080
+      - SCHEDULER_ENABLED=true
+      - DAILY_CHECK_TIME=0 0 0 * * *
+      - SCHEDULER_TIMEZONE=UTC
+      - REMINDER_EMAIL_FROM=library-system@example.com
+      - REMINDER_EMAIL_FROM_NAME=Library Management System
+      - EMAIL_RETRY_ATTEMPTS=3
+      - EMAIL_RETRY_DELAY_MINUTES=30
+      - MAIL_HOST=smtp.gmail.com
+      - MAIL_PORT=587
+      - MAIL_USERNAME=diludfernando@gmail.com
+      - MAIL_PASSWORD=jili itgl woek qsuu
+      - MAIL_DEBUG=false
+      - QUARTZ_JOB_STORE_TYPE=memory
+      - QUARTZ_INITIALIZE_SCHEMA=never
+      - QUARTZ_JOB_STORE_CLASS=org.quartz.simpl.RAMJobStore
+    depends_on:
+      mysql:
+        condition: service_healthy
+      borrow-service:
+        condition: service_started
+      user-service:
+        condition: service_started
+    networks:
+      - library-network
+    restart: unless-stopped
+
+  # Room Service
+  room-service:
+    build:
+      context: ./room-service
+      dockerfile: Dockerfile
+    container_name: room-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_APPLICATION_NAME=room-service
+      - DB_URL=jdbc:mysql://mysql:3306/room_service_db?createDatabaseIfNotExist=true
+      - DB_USERNAME=root
+      - DB_PASSWORD=password
+      - SERVER_PORT=8081
+      - SPRING_JPA_SHOW_SQL=true
+      - USER_SERVICE_BASE_URL=http://user-service:8080/api/users
+      - LIBRARY_NAME=University Library Management System
+      - MAX_DURATION_HOURS=4
+      - MAX_DAILY_BOOKINGS=2
+      - MAX_WEEKLY_BOOKINGS=5
+      - ADVANCE_BOOKING_DAYS=30
+      - LOG_LEVEL=DEBUG
+      - LOG_PATTERN=%d{yyyy-MM-dd HH:mm:ss} - %msg%n
+      - MAIL_HOST=smtp.gmail.com
+      - MAIL_PORT=587
+      - MAIL_USERNAME=diludfernando@gmail.com
+      - MAIL_PASSWORD=jili itgl woek qsuu
+      - MAIL_FROM=noreply@library.com
+      - MAIL_LOG_LEVEL=INFO
+    depends_on:
+      mysql:
+        condition: service_healthy
+      user-service:
+        condition: service_started
+    networks:
+      - library-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  library-network:
+    driver: bridge
