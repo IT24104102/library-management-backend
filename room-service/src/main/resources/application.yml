@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME:room-service}
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/room_service_db?createDatabaseIfNotExist=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+  
+  # Email Configuration (Optional - configure to enable email notifications)
+  mail:
+    host: ${MAIL_HOST:}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+    from: ${MAIL_FROM:noreply@library.com}
+
+server:
+  port: ${SERVER_PORT:8082}
+
+logging:
+  level:
+    com.hettiarachchi.roomservice: ${LOG_LEVEL:DEBUG}
+    org.springframework.mail: ${MAIL_LOG_LEVEL:INFO}
+  pattern:
+    console: "${LOG_PATTERN:%d{yyyy-MM-dd HH:mm:ss} - %msg%n}"
+
+user-service:
+  base-url: ${USER_SERVICE_BASE_URL:http://localhost:8081/api/users}
+
+# Application Configuration
+app:
+  library:
+    name: ${LIBRARY_NAME:University Library Management System}
+
+# Business Rules Configuration  
+room-booking:
+  max-duration-hours: ${MAX_DURATION_HOURS:4}
+  max-daily-bookings: ${MAX_DAILY_BOOKINGS:2}
+  max-weekly-bookings: ${MAX_WEEKLY_BOOKINGS:5}
+  advance-booking-days: ${ADVANCE_BOOKING_DAYS:30}
+
